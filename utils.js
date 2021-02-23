@@ -12,7 +12,7 @@ Utils.colisionLinePoint = function (line_start, line_end, point) {
     return (Math.abs(dist - (dist1 + dist2)) <= EPS);
 }
 
-Utils.colisionLineCircle = function (line_start, line_end, center) {
+Utils.colisionLineCircle = function (line_start, line_end, center, radius) {
     let v1 = Vector.subtract(line_end, line_start);
     let v2 = Vector.subtract(center, line_start);
     let dot = v1.dot(v2) / (v1.length() * v1.length());
@@ -26,7 +26,7 @@ Utils.colisionLineCircle = function (line_start, line_end, center) {
     }
 
     let distance = Vector.subtract(center, closest).length();
-    return distance <= RADIUS_BALL + EPS;
+    return distance <= radius + EPS;
 }
 
 Utils.getProjection = function(v1, v2) {

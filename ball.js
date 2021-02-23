@@ -80,7 +80,7 @@ Ball.prototype = {
         for (let j = 0; j < EDGES.length; ++j) {
             const points = EDGES[j];
             for (let i = 1; i < points.length; ++i) {
-                if (Utils.colisionLineCircle(points[i - 1], points[i], this.position)) {
+                if (Utils.colisionLineCircle(points[i - 1], points[i], this.position, RADIUS_BALL)) {
                     if (this.poolColision.get(i + " " + j) === true) {
                         continue;
                     }
