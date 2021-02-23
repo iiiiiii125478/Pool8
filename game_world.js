@@ -25,6 +25,12 @@ function GameWorld() {
     );
 }
 
+GameWorld.prototype.drawPredictionDirection = function () {
+    const begin = this.whiteBall.position;
+    const end = Mouse.position.clone().divide(SCALE);
+    Canvas.drawLine(begin, end);
+}
+
 GameWorld.prototype.handleColisions = function () {
     for (let i = 0; i < this.balls.length; ++i) {
         if (!this.balls[i].isMove) continue;
@@ -54,6 +60,11 @@ GameWorld.prototype.update = function () {
 
 GameWorld.prototype.draw = function () {
     Canvas.drawImage(sprites.table, { x: 0, y: 0 });
+
+    let isMove = this.balls.some(ball => ball.isMove === true);
+    if (!isMove) {
+        this.drawPredictionDirection();
+    }
 
     this.balls.forEach(ball => {
         ball.draw();
