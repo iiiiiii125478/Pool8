@@ -28,7 +28,48 @@ function GameWorld() {
 GameWorld.prototype.drawPredictionDirection = function () {
     const begin = this.whiteBall.position;
     const end = Mouse.position.clone().divide(SCALE);
-    Canvas.drawLine(begin, end);
+
+    const x1 = begin.x;
+    const y1 = begin.y;
+    const x2 = end.x;
+    const y2 = end.y;
+
+    const a = (y1 - y2) / (x1 - x2);
+    const b = y1 - a * x1;
+
+    let p_colision = end.clone();
+    for (let i = 0; i < 15; ++i) {
+        const ball = this.balls[i];
+        const x3 = ball.position.x;
+        const y3 = ball.position.y;
+
+        const c = a * a + 1;
+        const d = -2 * (x3 + a * y3 - a * b);
+        const e = x3 * x3 + b * b + y3 * y3 - 2 * b * y3 - 4 * RADIUS_BALL * RADIUS_BALL;
+
+        const delta = d * d - 4 * c * e;
+        if (delta < 0) continue;
+        const _x1 = (-d + Math.sqrt(delta)) / (2 * c);
+        const _x2 = (-d - Math.sqrt(delta)) / (2 * c);
+        const _y1 = a * _x1 + b;
+        const _y2 = a * _x2 + b;
+
+
+        const _v1 = new Vector(_x1, _y1);
+        const _v2 = new Vector(_x2, _y2);
+        if (a !== undefined && Vector.subtract(begin, _v1).length() < Vector.subtract(begin, p_colision).length()) {
+            p_colision = _v1;
+        }
+        if (b !== undefined && Vector.subtract(begin, _v2).length() < Vector.subtract(begin, p_colision).length()) {
+            p_colision = _v2;
+        }
+    };
+
+    if (p_colision) {
+        Canvas.drawLine(begin, p_colision);
+    } else {
+        Canvas.drawLine(begin, end);
+    }
 }
 
 GameWorld.prototype.handleColisions = function () {
