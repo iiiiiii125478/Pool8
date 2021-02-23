@@ -1,9 +1,9 @@
 const CUE_ORIGIN = new Vector(3600, 290);
 const CUE_SHOOT_ORIGIN = new Vector(3560, 290);
-const MAX_FORCE = 250;
+const MAX_FORCE = 200;
 const MIN_ORIGIN_X = 3600 + 400;
 const MAX_ORIGIN_X = 3600 + 500;
-const INC_FORCE = 2.5;
+const INC_FORCE = 2;
 const INC_ORIGIN_X = 5;
 
 
