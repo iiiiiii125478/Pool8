@@ -33,8 +33,8 @@ Cue.prototype = {
     },
 
     updateRotation: function () {
-        let opposite = Mouse.position.y - this.position.y;
-        let adjacent = Mouse.position.x - this.position.x;
+        let opposite = Mouse.position.y / SCALE - this.position.y;
+        let adjacent = Mouse.position.x / SCALE - this.position.x;
         this.rotation = new Vector(adjacent, opposite).normalize();
     },
 

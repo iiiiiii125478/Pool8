@@ -1,3 +1,5 @@
+const SCALE = 0.25;
+
 function Canvas2D() {
     this._canvas = document.getElementById("8-ball");
     this._ctx = this._canvas.getContext("2d");
@@ -12,6 +14,7 @@ Canvas2D.prototype.drawImage = function (
     let angle = rotation.toAngles();
 
     this._ctx.save();
+    this._ctx.scale(SCALE, SCALE);
     this._ctx.translate(position.x, position.y);
     this._ctx.rotate(angle);
     this._ctx.drawImage(image, -origin.x, -origin.y);
