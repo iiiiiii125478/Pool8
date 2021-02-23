@@ -72,51 +72,19 @@ Ball.prototype = {
     },
 
     colisionWithTable: function () {
-        function findProjection(v1, v2) {
-            v1 = v1.clone()
-            v2 = v2.clone()
-
-            const length = v1.dot(v2) / v2.length();
-            v2.normalize();
-            return new Vector(length * v2.x, length * v2.y);
-        }
-
-        function checkColision(line_start, line_end, center) {
-            let v1 = Vector.subtract(line_end, line_start);
-            let v2 = Vector.subtract(center, line_start);
-            let dot = v1.dot(v2) / (v1.length() * v1.length());
-
-            // Closest
-            let x = line_start.x + (dot * v1.x);
-            let y = line_start.y + (dot * v1.y);
-
-            // Check colision line/point
-            let dist1 = Vector.subtract(new Vector(x, y), line_start).length();
-            let dist2 = Vector.subtract(new Vector(x, y), line_end).length();
-            let dist = Vector.subtract(line_start, line_end).length();
-
-            const EPS = 1
-            if (Math.abs(dist - (dist1 + dist2)) > EPS) return false;
-
-            // Compare radius and distance 
-            let distance = Vector.subtract(center, new Vector(x, y)).length();
-            return distance <= RADIUS_BALL + EPS;
-        }
-
         for (let j = 0; j < EDGES.length; ++j) {
             const points = EDGES[j];
             for (let i = 1; i < points.length; ++i) {
-                if (checkColision(points[i - 1], points[i], this.position)) {
+                if (Utils.colisionLineCircle(points[i - 1], points[i], this.position)) {
                     if (this.poolColision.get(i + " " + j) === true) {
                         continue;
                     }
                     this.poolColision.set(i + " " + j, true);
 
                     console.log("Colision");
-                    let v1 = findProjection(this.velocity, Vector.subtract(points[i - 1], points[i]));
-                    let v2 = findProjection(this.velocity, new Vector(points[i].y - points[i - 1].y, points[i - 1].x - points[i].x)).negative();
-                    let v3 = v1.add(v2);
-                    this.velocity = v3;
+                    let v1 = Utils.getProjection(this.velocity, Vector.subtract(points[i - 1], points[i]));
+                    let v2 = Utils.getProjection(this.velocity, new Vector(points[i].y - points[i - 1].y, points[i - 1].x - points[i].x)).negative();
+                    this.velocity = v1.add(v2);
                 } else {
                     this.poolColision.set(i + " " + j, false);
                 }
