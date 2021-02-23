@@ -69,6 +69,11 @@ Ball.prototype = {
             this.position.x > TABLE.right ||
             this.position.y > TABLE.bottom
         );
+
+        if (this.inHold) {
+            this.velocity.multiply(0);
+            this.position.multiply(0);
+        }
     },
 
     colisionWithTable: function () {
