@@ -38,6 +38,7 @@ GameWorld.prototype.drawPredictionDirection = function () {
     const b = y1 - a * x1;
 
     let p_colision = end.clone();
+    let p_closest = undefined;
     for (let i = 0; i < 15; ++i) {
         const ball = this.balls[i];
         const x3 = ball.position.x;
@@ -57,16 +58,50 @@ GameWorld.prototype.drawPredictionDirection = function () {
 
         const _v1 = new Vector(_x1, _y1);
         const _v2 = new Vector(_x2, _y2);
-        if (a !== undefined && Vector.subtract(begin, _v1).length() < Vector.subtract(begin, p_colision).length()) {
+
+        if (
+            a !== undefined &&
+            Utils.colisionLinePoint(begin, end, _v1) &&
+            Vector.subtract(begin, _v1).length() < Vector.subtract(begin, p_colision).length()
+        ) {
             p_colision = _v1;
+            p_closest = ball.position;
         }
-        if (b !== undefined && Vector.subtract(begin, _v2).length() < Vector.subtract(begin, p_colision).length()) {
+        if (
+            b !== undefined &&
+            Utils.colisionLinePoint(begin, end, _v1) &&
+            Vector.subtract(begin, _v2).length() < Vector.subtract(begin, p_colision).length()
+        ) {
             p_colision = _v2;
+            p_closest = ball.position;
         }
     };
 
-    if (p_colision) {
+    if (p_colision !== undefined && p_closest !== undefined) {
         Canvas.drawLine(begin, p_colision);
+
+        let d = Vector.subtract(p_colision, begin);
+        let un = Vector.subtract(p_closest, p_colision).normalize();
+        let ut = new Vector(-un.clone().y, un.clone().x);
+
+        const v1n = un.dot(new Vector());
+        const v1t = ut.dot(new Vector());
+        const v2n = un.dot(d);
+        const v2t = ut.dot(d);
+
+        let v1nTag = v2n;
+        let v2nTag = v1n;
+
+        v1nTag = un.clone().multiply(v1nTag);
+        const v1tTag = ut.clone().multiply(v1t);
+        v2nTag = un.clone().multiply(v2nTag);
+        const v2tTag = ut.clone().multiply(v2t);
+
+        let end_un = v1nTag.add(v1tTag).normalize().multiply(200);
+        let end_ut = v2nTag.add(v2tTag).normalize().multiply(200);
+
+        Canvas.drawLine(p_closest, p_closest.clone().add(end_un));
+        Canvas.drawLine(p_colision, p_colision.clone().add(end_ut));
     } else {
         Canvas.drawLine(begin, end);
     }

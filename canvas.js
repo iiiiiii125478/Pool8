@@ -1,4 +1,5 @@
 const SCALE = 0.25;
+const LINE_WEIGHT = 5;
 
 function Canvas2D() {
     this._canvas = document.getElementById("8-ball");
@@ -24,6 +25,7 @@ Canvas2D.prototype.drawImage = function (
 Canvas2D.prototype.drawLine = function(begin, end) {
     this._ctx.save();
     this._ctx.beginPath();
+    this._ctx.lineWidth = LINE_WEIGHT;
     this._ctx.scale(SCALE, SCALE);
     this._ctx.moveTo(begin.x, begin.y);
     this._ctx.lineTo(end.x, end.y);
