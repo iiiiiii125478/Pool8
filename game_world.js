@@ -23,6 +23,9 @@ function GameWorld() {
         this.whiteBall.position.clone(),
         this.whiteBall.shoot.bind(this.whiteBall)
     );
+
+    this.match = new Match();
+    this.nextTurn = false;
 }
 
 GameWorld.prototype.drawPredictionDirection = function () {
@@ -123,15 +126,23 @@ GameWorld.prototype.update = function () {
     this.handleColisions();
 
     this.balls.forEach(ball => {
+        if (ball.checkInHold()) {
+            this.match.ballInHold(ball);
+        }
         ball.update();
     });
 
-    let isMove = this.balls.some(ball => ball.isMove === true);
-    if (!Mouse.left.down && !isMove) {
-        this.cue.updatePosition(this.whiteBall.position);
+    if (this.nextTurn) {
+        let isMove = this.balls.some(ball => ball.isMove === true);
+        if (!Mouse.left.down && !isMove) {
+            this.cue.updatePosition(this.whiteBall.position);
+            this.match.setScore();
+            this.nextTurn = false;
+        }
     }
 
-    this.cue.update();
+    let shootState = this.cue.update();
+    if (shootState) this.nextTurn = true;
 }
 
 GameWorld.prototype.draw = function () {

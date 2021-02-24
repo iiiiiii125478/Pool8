@@ -24,13 +24,15 @@ function Ball(resource, position) {
     this.poolColision = new Map();
     this.isMove = false;
     this.inHold = false;
+
+    const re = /(.+ball_|\.png)/
+    this.type = resource.src.split(re)[2];
 }
 
 Ball.prototype = {
     update: function () {
         this.applyFriction();
         this.colisionWithTable();
-        this.setInHold();
 
         this.position.add(this.velocity);
     },
@@ -62,7 +64,9 @@ Ball.prototype = {
         this.applyForce(friction);
     },
 
-    setInHold: function () {
+    checkInHold: function () {
+        if (this.inHold) return false;
+
         this.inHold = (
             this.position.y < TABLE.top ||
             this.position.x < TABLE.left ||
@@ -73,7 +77,10 @@ Ball.prototype = {
         if (this.inHold) {
             this.velocity.multiply(0);
             this.position.multiply(0);
+            return true;
         }
+
+        return false;
     },
 
     colisionWithTable: function () {
@@ -86,7 +93,6 @@ Ball.prototype = {
                     }
                     this.poolColision.set(i + " " + j, true);
 
-                    console.log("Colision");
                     let v1 = Utils.getProjection(this.velocity, Vector.subtract(points[i - 1], points[i]));
                     let v2 = Utils.getProjection(this.velocity, new Vector(points[i].y - points[i - 1].y, points[i - 1].x - points[i].x)).negative();
                     this.velocity = v1.add(v2);

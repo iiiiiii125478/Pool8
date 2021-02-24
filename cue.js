@@ -23,9 +23,11 @@ Cue.prototype = {
             this.increaseFoce();
         } else if (this.force > 0) {
             this.shoot();
+            return true;
         }
 
         this.updateRotation();
+        return false;
     },
 
     draw: function () {
